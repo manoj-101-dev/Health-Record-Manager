@@ -107,7 +107,7 @@ function SignUp() {
             <p className="mt-3 text-center">
               Already have an account?{" "}
               <span
-                onClick={() => navigate("/login")}
+                onClick={() => navigate("/")}
                 style={{
                   cursor: "pointer",
                   color: "blue",
