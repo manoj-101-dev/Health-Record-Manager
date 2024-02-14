@@ -5,30 +5,36 @@ import "../App.css";
 import CustomNavbar from "./Navbar";
 
 function EditHealthRecord() {
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const { id } = useParams(); // Get the id parameter from the URL
+  const navigate = useNavigate(); // Hook for navigation
   const [formData, setFormData] = useState({
     weight: "",
     exercise: "",
     notes: "",
   });
 
+  // Fetch the health record data when the component mounts
   useEffect(() => {
     async function fetchHealthRecord() {
       try {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("token"); // Get the token from localStorage
         if (!token) {
           // Handle missing token
           return;
         }
 
-        const response = await fetch(`http://localhost:3000/health/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        // Fetch the health record data using the id and token
+        const response = await fetch(
+          `https://health-record-manager.onrender.com/health/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (response.ok) {
+          // If the response is successful, set the form data with the fetched data
           const data = await response.json();
           setFormData({
             weight: data.weight,
@@ -43,25 +49,27 @@ function EditHealthRecord() {
       }
     }
     fetchHealthRecord();
-  }, [id]);
+  }, [id]); // Run this effect whenever the id changes
 
+  // Function to handle changes in the form inputs
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token"); // Get the token from localStorage
       const response = await fetch(
-        `http://localhost:3000/health/update/${id}`,
+        `https://health-record-manager.onrender.com/health/update/${id}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(formData), // Send the updated data in the request body
         }
       );
       if (response.ok) {

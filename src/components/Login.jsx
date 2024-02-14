@@ -13,26 +13,32 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  // Function to handle changes in form inputs
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Function to handle successful login
   const handleLoginSuccess = (token) => {
     localStorage.setItem("token", token);
     navigate("/Home");
   };
 
+  // Function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:3000/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        "https://health-record-manager.onrender.com/users/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
       const data = await response.json();
       if (response.ok) {
         handleLoginSuccess(data.token);
@@ -47,6 +53,7 @@ function Login() {
     }
   };
 
+  // Function to toggle password visibility
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -72,7 +79,7 @@ function Login() {
               <Form.Group controlId="password">
                 <Form.Label>Password</Form.Label>
                 <Form.Control
-                  type={showPassword ? "text" : "password"} // Show/hide password based on state
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
@@ -117,6 +124,7 @@ function Login() {
   );
 }
 
+// Component that provides a welcome message and renders the Login component
 export default function LoginPage() {
   return (
     <>

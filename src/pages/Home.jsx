@@ -6,7 +6,10 @@ import "../App.css";
 function Home() {
   return (
     <div className="nav-with-margin">
+      {/* Render the custom navbar */}
       <CustomNavbar />
+
+      {/* Main content container */}
       <Container className="mt-5">
         <Row className="justify-content-center">
           <Col md={8}>
@@ -17,12 +20,16 @@ function Home() {
             </p>
           </Col>
         </Row>
+
+        {/* View all records button */}
         <div className="view-btn">
           <Link to="/list">
             <Button variant="primary">View All Records</Button>
           </Link>
         </div>
       </Container>
+
+      {/* Create new record button */}
       <div className="create-btn">
         <Link to="/create">
           <Button variant="primary">Create New Record</Button>

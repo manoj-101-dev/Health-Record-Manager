@@ -13,36 +13,47 @@ function CreateHealthRecord() {
   });
   const [error, setError] = useState("");
 
+  // Function to handle changes in the form inputs
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     let formIsValid = true;
 
+    // Validation: check if weight is a number
     if (!formData.weight || isNaN(formData.weight)) {
       setError("Weight must be a number");
       formIsValid = false;
-    } else if (!formData.exercise.trim()) {
+    }
+    // Validation: check if exercise is not empty
+    else if (!formData.exercise.trim()) {
       setError("Exercise is required");
       formIsValid = false;
-    } else if (!formData.notes.trim()) {
+    }
+    // Validation: check if notes are not empty
+    else if (!formData.notes.trim()) {
       setError("Notes are required");
       formIsValid = false;
     }
 
+    // If form is valid, submit the data
     if (formIsValid) {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch("http://localhost:3000/health/create", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(formData),
-        });
+        const response = await fetch(
+          "https://health-record-manager.onrender.com/health/create",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(formData),
+          }
+        );
         if (response.ok) {
           console.log("Health record created successfully");
           navigate("/Home"); // Redirect to health record list page

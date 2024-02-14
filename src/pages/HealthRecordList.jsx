@@ -1,11 +1,9 @@
-// HealthRecordList component
-
+import { useState } from "react";
 import { Alert, Button, Container, Row, Col, Modal } from "react-bootstrap";
-import { FaEdit, FaTrash } from "react-icons/fa";
-import "../App.css";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import CustomNavbar from "../components/Navbar";
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 function HealthRecordList() {
   const navigate = useNavigate();
@@ -15,8 +13,8 @@ function HealthRecordList() {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [recordToDelete, setRecordToDelete] = useState(null);
 
+  // Fetch health records from the server
   useEffect(() => {
-    // Fetch token from local storage
     const token = localStorage.getItem("token");
     if (!token) {
       setError("Token not found in local storage");
@@ -26,11 +24,14 @@ function HealthRecordList() {
 
     const fetchHealthRecords = async () => {
       try {
-        const response = await fetch("http://localhost:3000/health/getAll", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "https://health-record-manager.onrender.com/health/getAll",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         if (!response.ok) {
           throw new Error("Failed to fetch health records");
         }
@@ -46,21 +47,23 @@ function HealthRecordList() {
     fetchHealthRecords();
   }, []);
 
+  // Handle editing a health record
   const handleEdit = (recordId) => {
-    // Navigate to edit page with the record ID as a URL parameter
     navigate(`/edit/${recordId}`);
   };
 
+  // Handle initiating record deletion
   const handleDelete = (recordId) => {
-    setRecordToDelete(recordId); // Set the record ID to be deleted
-    setShowDeleteConfirmation(true); // Show the confirmation modal
+    setRecordToDelete(recordId);
+    setShowDeleteConfirmation(true);
   };
 
+  // Confirm deletion and update the list of health records
   const confirmDelete = async () => {
     const token = localStorage.getItem("token");
     try {
       const response = await fetch(
-        `http://localhost:3000/health/delete/${recordToDelete}`,
+        `https://health-record-manager.onrender.com/health/delete/${recordToDelete}`,
         {
           method: "DELETE",
           headers: {
@@ -69,25 +72,23 @@ function HealthRecordList() {
         }
       );
       if (response.ok) {
-        // Handle success, maybe show a success message
         console.log("Health record deleted successfully");
-        // Update the health records list after deletion
         setHealthRecords(
           healthRecords.filter((record) => record._id !== recordToDelete)
         );
       } else {
-        // Handle error, maybe show an error message
         console.error("Failed to delete health record");
       }
     } catch (error) {
       console.error("Error:", error);
     } finally {
-      setShowDeleteConfirmation(false); // Close the confirmation modal
+      setShowDeleteConfirmation(false);
     }
   };
 
+  // Cancel deletion
   const cancelDelete = () => {
-    setShowDeleteConfirmation(false); // Close the confirmation modal
+    setShowDeleteConfirmation(false);
   };
 
   return (
